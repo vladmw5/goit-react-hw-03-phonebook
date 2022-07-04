@@ -8,6 +8,12 @@ import Filter from './Filter';
 import s from './App.module.css';
 import capitalize from 'utils/capitalize';
 
+const LOCAL_STORAGE_KEY = 'contacts';
+const INITIAL_STATE = {
+  contacts: [],
+  filter: '',
+};
+
 class App extends Component {
   state = {
     contacts: [
@@ -64,6 +70,22 @@ class App extends Component {
   handleDeleteContactBtnClick = event => {
     this.deleteContact(event.target.dataset.id);
   };
+
+  componentDidMount() {
+    const save = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (!save) {
+      this.setState({ ...INITIAL_STATE });
+      return;
+    }
+    this.setState({ contacts: JSON.parse(save) });
+  }
+
+  componentDidUpdate() {
+    localStorage.setItem(
+      LOCAL_STORAGE_KEY,
+      JSON.stringify(this.state.contacts)
+    );
+  }
 
   render() {
     const {
